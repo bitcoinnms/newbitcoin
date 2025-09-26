@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Puzzle Pattern Solver #70-73</title>
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+        }
+        
+        body {
+            background: var(--dark);
+            color: white;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+        }
+        
+        .strategy-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .strategy-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .strategy-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .strategy-card.active {
+            border-color: var(--secondary);
+            background: #1e3a2b;
+        }
+        
+        .control-panel {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .progress-container {
+            background: #334155;
+            height: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .results {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #334155;
+            font-size: 0.9em;
+        }
+        
+        .log-entry.found {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Bitcoin Puzzle Pattern Solver #70-73</h1>
+            <p>Intelligent Analysis & Pattern Recognition System</p>
+        </header>
+
+        <div class="strategy-panel" id="strategyPanel">
+            <div class="strategy-card active" data-strategy="interval">
+                <h3>📊 Interval Analysis</h3>
+                <p>Analyze gaps between solved puzzles</p>
+            </div>
+            <div class="strategy-card" data-strategy="mathematical">
+                <h3>🧮 Mathematical Sequences</h3>
+                <p>Fibonacci, primes, power patterns</p>
+            </div>
+            <div class="strategy-card" data-strategy="vanity">
+                <h3>🎯 Vanity Pattern Detection</h3>
+                <p>Human-readable key patterns</p>
+            </div>
+            <div class="strategy-card" data-strategy="cluster">
+                <h3>🔗 Solution Clustering</h3>
+                <p>Density-based probability mapping</p>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                <select id="puzzleSelect" style="padding: 10px; background: #334155; color: white; border: none; border-radius: 5px;">
+                    <option value="70">Puzzle #70 (2⁶⁹)</option>
+                    <option value="71">Puzzle #71 (2⁷⁰)</option>
+                    <option value="72">Puzzle #72 (2⁷¹)</option>
+                    <option value="73">Puzzle #73 (2⁷²)</option>
+                </select>
+                
+                <button id="startBtn">🚀 Start Intelligent Search</button>
+                <button id="stopBtn" class="btn-danger" disabled>⏹️ Stop</button>
+                <button id="analyzeBtn" class="btn-success">🔍 Analyze Patterns Only</button>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div>Keys Checked</div>
+                <div id="keysChecked">0</div>
+            </div>
+            <div class="stat-card">
+                <div>Speed (keys/sec)</div>
+                <div id="speed">0</div>
+            </div>
+            <div class="stat-card">
+                <div>Current Strategy</div>
+                <div id="currentStrategy">Interval Analysis</div>
+            </div>
+            <div class="stat-card">
+                <div>High-Probability Hits</div>
+                <div id="patternHits">0</div>
+            </div>
+            <div class="stat-card">
+                <div>Confidence Level</div>
+                <div id="confidence">0%</div>
+            </div>
+            <div class="stat-card">
+                <div>Estimated Time</div>
+                <div id="eta">--</div>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <div class="log-entry">🚀 Ready to analyze Bitcoin puzzles #70-73</div>
+            <div class="log-entry">💡 Select a strategy and click "Analyze Patterns" to begin</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bitcoinjs-lib@6.1.0"></script>
+    <script src="pattern-solver.js"></script>
+</body>
+</html>
